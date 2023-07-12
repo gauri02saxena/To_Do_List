@@ -1,0 +1,26 @@
+<%- include("header") -%>
+    <div class="box" id="heading">
+      <h1><%=listTitle%></h1>
+
+    </div>
+ 
+    <div class="box">
+       
+      <%  for(var i=0;i<newAddedItems.length;i++) { %>
+        <div class="item">
+          <input type="checkbox">
+          <p> <%= newAddedItems[i] %> </p>
+        </div>
+      <%  }   %>
+
+      <!-- posting the entry to server at home route -->
+      <form action="/" class="item" method="post">
+        <input type="text" name="newItem" id="check" placeholder="New item" autocomplete="off"/>
+        <button typ="submit">+</button>
+      </form>
+    </div>
+
+    <%- include("header") -%>
+
+ 
+
