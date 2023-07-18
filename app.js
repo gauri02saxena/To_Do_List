@@ -42,6 +42,7 @@ app.get("/", function (req, res) {
 
 
   //Reading data from DB
+  //foundItems is the DB data which is an array of objects
   Item.find({})
   .then((foundItems)=> {
     if(foundItems.length===0){
@@ -64,9 +65,24 @@ app.get("/", function (req, res) {
 });
 
 app.post("/", function (req, res) {
-  const item = req.body.newItem;
-  items.push(item);
+  const itemName = req.body.newItem;
+
+  const newItem= new Item({
+    name : itemName
+  });
+
+  newItem.save();
+
   res.redirect("/");
+ 
+});
+
+app.post("/delete", function(req,res){
+  const checkedItemId=req.body.checkbox;
+
+  Item.findByIdAndRemove(checkedItemId)
+  .then(()=>{console.log("Successfully deleted item"); res.redirect("/");})
+  .catch((err)=>console.log(err));
 });
 
 app.listen(3000, function (req, res) {
