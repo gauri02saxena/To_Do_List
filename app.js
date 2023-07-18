@@ -1,9 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const date=require(__dirname+"/date.js");
+const mongoose=require("mongoose");
 
 const app = express();
-const items = ["Work" , "Eat food" , "Sleep"];
+
+
 //setting app's view engine to ejs or telling the app to use ejs because by default express uses jade
 app.set("view engine", "ejs");
 
@@ -11,10 +13,41 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //use public folder for loading static files like css or images etc
 app.use(express.static("public"));
 
+
+mongoose.connect("mongodb://127.0.0.1/todolistDB", {useNewUrlParser:true});
+
+//Schema
+const itemsSchema= {
+  name: String
+};
+
+//Model
+const Item= mongoose.model("Item", itemsSchema);
+
+//Documents
+const item1= new Item({
+  name:"Wake up"
+});
+
+const item2= new Item({
+  name : "Take a bath"
+});
+
+
+const item3= new Item({
+  name : "Have breakfast"
+});
+
+//Inserting to DB
+const defaultIteams=[item1,item2,item3];
+Item.insertMany(defaultIteams)
+.then(()=> console.log("Succesfully added defaultItems to DB"))
+.catch((err)=>console.log(err));
+
+
 app.get("/", function (req, res) {
- 
-  const day=date.getDate();
-  res.render("list", { listTitle: day, newAddedItems: items });
+
+  res.render("list", { listTitle: Today, newAddedItems: items });
 });
 
 app.post("/", function (req, res) {
