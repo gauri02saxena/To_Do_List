@@ -80,12 +80,14 @@ app.get("/:customListName", function (req, res) {
         });
 
         list.save();
-        //Reloading the page to display the list on the browser 
-        res.redirect("/"+ customListName);
-
+        //Reloading the page to display the list on the browser
+        res.redirect("/" + customListName);
       } else {
-        //Show existing list 
-        res.render("list", {listTitle: foundList.name, newAddedItems: foundList.items});
+        //Show existing list
+        res.render("list", {
+          listTitle: foundList.name,
+          newAddedItems: foundList.items,
+        });
       }
     })
     .catch((err) => console.log(err));
@@ -93,14 +95,27 @@ app.get("/:customListName", function (req, res) {
 
 app.post("/", function (req, res) {
   const itemName = req.body.newItem;
+  const listName = req.body.submit;
 
   const newItem = new Item({
     name: itemName,
   });
 
-  newItem.save();
+  if (listName === "Today") {
+    newItem.save();
 
-  res.redirect("/");
+    res.redirect("/");
+  }
+
+  else{
+    List.findOne({name: listName})
+    .then((foundList)=>{
+      foundList.items.push(newItem),
+      foundList.save(),
+      res.redirect("/"+listName)
+    });
+  }
+    
 });
 
 app.post("/delete", function (req, res) {
