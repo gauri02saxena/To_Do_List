@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _=require("lodash");
 
 const app = express();
 
@@ -64,9 +65,9 @@ app.get("/", function (req, res) {
     .catch((err) => console.log(err));
 });
 
-//Creating dynamic routes through express routing parameters
+//Functionality to create custom lists
 app.get("/:customListName", function (req, res) {
-  const customListName = req.params.customListName;
+  const customListName = _.capitalize(req.params.customListName);
 
   //Checking if the default list items are present in the new list or not
   List.findOne({ name: customListName })
@@ -105,28 +106,39 @@ app.post("/", function (req, res) {
     newItem.save();
 
     res.redirect("/");
-  }
-
-  else{
-    List.findOne({name: listName})
-    .then((foundList)=>{
+  } else {
+    List.findOne({ name: listName }).then((foundList) => {
       foundList.items.push(newItem),
-      foundList.save(),
-      res.redirect("/"+listName)
+        foundList.save(),
+        res.redirect("/" + listName);
     });
   }
-    
 });
 
+//Only deleting Today list items for now
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
+  // const listName = req.body.listName;
+  // console.log("Checked Item ID:", checkedItemId);
+  // console.log("List Name:", listName);
+  // if (listName === "Today") {
+    Item.findByIdAndRemove(checkedItemId)
+      .then(() => {
+        console.log("Successfully deleted item");
+        res.redirect("/");
+      })
+      .catch((err) => console.log(err));
+//   } else {
+//     List.findOneAndUpdate(
+//       { name: listName },
+//       { $pull: { items: { _id: checkedItemId } } }
+//     )
+//       .then((listName) => {
+//         res.redirect("/" + listName);
+//       })
+//       .catch((err) => console.log(err));
+//   }
 
-  Item.findByIdAndRemove(checkedItemId)
-    .then(() => {
-      console.log("Successfully deleted item");
-      res.redirect("/");
-    })
-    .catch((err) => console.log(err));
 });
 
 app.listen(3000, function (req, res) {

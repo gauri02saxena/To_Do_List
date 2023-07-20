@@ -10,8 +10,10 @@
         <input type="checkbox" name="checkbox" value= <%= item._id %> onChange="this.form.submit()"/>
         <p><%= item.name %></p>
       </div>
-      <% }) %>
+   
+      <input type="hidden" name="listName" value="<% listTitle %>">
     </form>
+    <% }) %>
 
 
   <!-- posting the entry to server at home route -->
