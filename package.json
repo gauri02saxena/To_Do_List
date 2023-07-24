@@ -8,9 +8,7 @@
   },
   "author": "Gauri",
   "license": "ISC",
-  "engines": {
-    "node":"18.16.1"
-  },
+ 
   "dependencies": {
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
