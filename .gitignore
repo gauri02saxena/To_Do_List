@@ -1,3 +1,13 @@
-.DS_Store
-
+# Ignore node_modules directory
 node_modules/
+
+#Ignore .env
+.env 
+
+# Ignore build output
+build/
+
+# Ignore temporary files
+*.tmp
+*.log
+*.bak

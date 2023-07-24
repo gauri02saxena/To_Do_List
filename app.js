@@ -1,3 +1,6 @@
+require('dotenv').config()
+console.log(process.env)
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -12,7 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //use public folder for loading static files like css or images etc
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://127.0.0.1/todolistDB", { useNewUrlParser: true });
+mongoose.set('strictQuery',false);
+
+mongoose.connect("mongodb+srv://gauri:test123@cluster0.h5kugdj.mongodb.net/todolistDB", { useNewUrlParser: true });
 
 //Items Schema
 const itemsSchema = {
@@ -141,6 +146,14 @@ app.post("/delete", function (req, res) {
 
 });
 
-app.listen(3000, function (req, res) {
+
+// PORT
+// let port= process.env.PORT;
+// if(port==null || port=="")
+// {
+//   port=3000;
+// }
+
+app.listen(process.env.PORT || 3000, function (req, res) {
   console.log("Server is running at port 3000");
 });
