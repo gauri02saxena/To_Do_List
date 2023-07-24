@@ -17,7 +17,7 @@ app.use(express.static("public"));
 
 mongoose.set('strictQuery',false);
 
-mongoose.connect("mongodb+srv://gauri:test123@cluster0.h5kugdj.mongodb.net/todolistDB", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 
 //Items Schema
 const itemsSchema = {
