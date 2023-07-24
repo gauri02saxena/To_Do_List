@@ -1,5 +1,5 @@
 require('dotenv').config()
-console.log(process.env)
+
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -120,30 +120,38 @@ app.post("/", function (req, res) {
   }
 });
 
-//Only deleting Today list items for now
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
-  // const listName = req.body.listName;
-  // console.log("Checked Item ID:", checkedItemId);
-  // console.log("List Name:", listName);
-  // if (listName === "Today") {
+  const customListName = req.body.listName;
+
+  if (customListName === "Today") {
     Item.findByIdAndRemove(checkedItemId)
       .then(() => {
         console.log("Successfully deleted item");
         res.redirect("/");
       })
       .catch((err) => console.log(err));
-//   } else {
-//     List.findOneAndUpdate(
-//       { name: listName },
-//       { $pull: { items: { _id: checkedItemId } } }
-//     )
-//       .then((listName) => {
-//         res.redirect("/" + listName);
-//       })
-//       .catch((err) => console.log(err));
-//   }
-
+  } else {
+    List.findOneAndUpdate(
+      { name: customListName },
+      { $pull: { items: { _id: checkedItemId } } },
+      { new: true } // Set 'new' option to true to get the updated list after deletion
+    )
+      .then((updatedList) => {
+        if (updatedList.items.length === 0) {
+          // If the list is empty after deletion, remove the list from the database
+          List.findOneAndRemove({ name: customListName })
+            .then(() => {
+              console.log("Successfully deleted the custom list");
+              res.redirect("/");
+            })
+            .catch((err) => console.log(err));
+        } else {
+          res.redirect("/" + customListName);
+        }
+      })
+      .catch((err) => console.log(err));
+  }
 });
 
 
