@@ -17,7 +17,7 @@ app.use(express.static("public"));
 
 mongoose.set('strictQuery',false);
 
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO, { useNewUrlParser: true });
 
 //Items Schema
 const itemsSchema = {
